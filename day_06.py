@@ -1,22 +1,7 @@
 import enum
 import time
 
-
-class Direction(enum.Enum):
-    UP = (0, -1)
-    RIGHT = (1, 0)
-    DOWN = (0, 1)
-    LEFT = (-1, 0)
-
-    def turn_90_degrees(self) -> ['Direction']:
-        if self == Direction.UP:
-            return Direction.RIGHT
-        if self == Direction.RIGHT:
-            return Direction.DOWN
-        if self == Direction.DOWN:
-            return Direction.LEFT
-        if self == Direction.LEFT:
-            return Direction.UP
+from util.grid_utils import Direction
 
 
 def position_is_on_grid(position: tuple, grid_width: int, grid_height: int):
@@ -30,8 +15,8 @@ def perform_guard_walk(obstacle_positions: set, guard_start_position: tuple, gua
     current_guard_position = guard_start_position
     current_guard_direction = guard_start_direction
     while position_is_on_grid(current_guard_position, grid_width, grid_height):
-        next_guard_position = (current_guard_position[0] + current_guard_direction.value[0],
-                               current_guard_position[1] + current_guard_direction.value[1])
+        next_guard_position = (current_guard_position[0] + current_guard_direction.value.x,
+                               current_guard_position[1] + current_guard_direction.value.y)
         if next_guard_position in obstacle_positions:
             current_guard_direction = current_guard_direction.turn_90_degrees()
         else:

@@ -36,7 +36,8 @@ def part_1(stone_counts: defaultdict):
 
 
 def part_2(stone_counts: defaultdict):
-    for _ in range(75):
+    for i in range(75):
+        start = time.time()
         stone_counts = blink(stone_counts)
     print(sum(stone_counts.values()))
 
