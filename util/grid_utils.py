@@ -21,9 +21,18 @@ class Vector2D:
     def __hash__(self):
         return hash((self.x, self.y))
 
+    def __le__(self, other):
+        return self.x <= other.x and self.y <= other.y
+
+    def __lt__(self, other):
+        return self.x < other.x and self.y < other.y
+
     def __iter__(self):
         yield self.x
         yield self.y
+
+    def __repr__(self):
+        return f'({self.x}, {self.y})'
 
     @staticmethod
     def is_horizontally_adjacent(a: ['Vector2D'], b: ['Vector2D']) -> bool:
@@ -50,6 +59,12 @@ class Direction(enum.Enum):
         if self == Direction.LEFT:
             return Direction.UP
 
+    def __le__(self, other):
+        return self.value <= other.value
+
+    def __lt__(self, other):
+        return self.value < other.value
+
 
 class Grid:
     def __init__(self, grid: [[]]):
@@ -60,7 +75,11 @@ class Grid:
     @classmethod
     def from_file(cls, file_path: str, transform=lambda x: x) -> 'Grid':
         with open(file_path, 'r') as file:
-            grid = [list(map(transform, row)) for row in file.read().split('\n')]
+            return cls.from_text(file.read(), transform)
+
+    @classmethod
+    def from_text(cls, text: str, transform=lambda x: x) -> 'Grid':
+        grid = [list(map(transform, row)) for row in text.split('\n')]
         return cls(grid)
 
     def all_positions(self) -> [Vector2D]:
@@ -72,9 +91,21 @@ class Grid:
     def put(self, x: int, y: int, value):
         self.grid[y][x] = value
 
+    def find(self, value) -> Vector2D:
+        for y, row in enumerate(self.grid):
+            for x, cell in enumerate(row):
+                if cell == value:
+                    return Vector2D(x, y)
+
+    def find_all(self, value) -> [Vector2D]:
+        return [Vector2D(x, y) for y, row in enumerate(self.grid) for x, cell in enumerate(row) if cell == value]
+
     def adjacent_positions(self, x: int, y: int) -> [Vector2D]:
         return [vector for vector in [Vector2D(x - 1, y), Vector2D(x + 1, y), Vector2D(x, y - 1), Vector2D(x, y + 1)]
                 if self.position_is_on_grid(*vector)]
 
     def position_is_on_grid(self, x: int, y: int):
         return 0 <= x < self.grid_width and 0 <= y < self.grid_height
+
+    def __repr__(self):
+        return '\n'.join([''.join(row) for row in self.grid])
