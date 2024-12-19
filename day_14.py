@@ -78,6 +78,7 @@ if __name__ == '__main__':
     part_1(ROBOTS)
     print('\nExecution time:', time.time() - start_time)
 
+    start_time = time.time()
     print('\n----- PART 2 -----')
     part_2(ROBOTS)
     print('\nExecution time:', time.time() - start_time)
